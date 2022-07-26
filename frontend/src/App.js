@@ -1,15 +1,12 @@
-import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+import MainRouter from './components/shared/MainRouter/MainRouter';
 
 const App = () => {
-  return (
-    <div>
-        <h1>
-          TREENIPÄIVÄKIRJA
-        </h1>
-        <h6>
-          Harjoitus 4, created by <vaihda oma nimesi>
-        </h6>
 
+  return (
+    <div className='page-container'>
+      <MainRouter />
     </div>
   );
 }

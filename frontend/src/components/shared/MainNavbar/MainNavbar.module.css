@@ -1,0 +1,12 @@
+.navbar {
+    margin-bottom: 10px;
+}
+
+.link {
+    padding-right: 50px !important;
+    padding-left: 50px !important;
+}
+
+.link:not(:last-child) {
+    border-right: 2px solid rgb(216, 216, 216);
+}
