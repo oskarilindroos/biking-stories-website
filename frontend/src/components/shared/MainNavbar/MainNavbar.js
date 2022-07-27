@@ -13,11 +13,14 @@ const MainNavbar = () => {
                         <Nav.Link className={styles.link} as={Link} to="/">
                             Home
                         </Nav.Link>
+                        <Nav.Link className={styles.link} as={Link} to="/users">
+                            Users
+                        </Nav.Link>
                         <Nav.Link className={styles.link} as={Link} to="/stories">
                             Stories
                         </Nav.Link>
-                        <Nav.Link className={styles.link} as={Link} to="/users">
-                            Users
+                        <Nav.Link className={styles.link} as={Link} to="/stories/new">
+                            Edit story/New Story
                         </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

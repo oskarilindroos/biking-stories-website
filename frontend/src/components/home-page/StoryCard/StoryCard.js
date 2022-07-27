@@ -31,7 +31,7 @@ const StoryCard = () => {
     }, []);
 
     return (
-        <Card style={{ minHeight: '250px' }}>
+        <Card style={{ minHeight: '250px', marginBottom: '1rem' }}>
             <Card.Body>
                 <Card.Title><b>{story.date} at {story.place}</b></Card.Title>
                 <Card.Text>

@@ -1,12 +1,15 @@
 .navbar {
     margin-bottom: 10px;
+    border-bottom: 1px solid rgb(201, 201, 201);
 }
 
 .link {
+    color: black;
+    font-weight: bold;
     padding-right: 50px !important;
     padding-left: 50px !important;
 }
 
 .link:not(:last-child) {
-    border-right: 2px solid rgb(216, 216, 216);
+    border-right: 2px solid rgb(235, 235, 235);
 }

@@ -2,7 +2,8 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    background-color: rgba(233, 233, 233, 0.781);
+    background-color: rgb(245, 245, 245);
+    border-top: 1px solid rgb(201, 201, 201);
 }
 
 .footerContent {
