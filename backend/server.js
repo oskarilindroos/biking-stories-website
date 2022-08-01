@@ -15,7 +15,16 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // sallitaan CORS-pyynnöt ja autentikointi
-//app.use((req, res, next) => {});
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
+});
 
 // tänne reitityskutsut
 app.use("/api/users", usersRoutes);
