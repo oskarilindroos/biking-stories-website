@@ -1,12 +1,12 @@
-const express = require('express');
-const usersControllers = require('../controllers/users-controllers');
+const express = require("express");
+const userControllers = require("../controllers/user-controllers");
 
-// luodaan tänne reititys users resurssille
-
+// Create route for users
 const router = express.Router();
 
-// esimerkkinä login-endpoint
-router.post('/api/users/login/', usersControllers.login);
+router.get("/", userControllers.getAllUsers);
+router.get("/:_id", userControllers.getUserById);
+router.post("/signup", userControllers.signup);
+//router.post('/login', userControllers.login);
 
 module.exports = router;
-
