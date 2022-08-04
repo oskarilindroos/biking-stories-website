@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
 
 // Finds all users
@@ -43,11 +44,17 @@ exports.getUserById = async (req, res, next) => {
 
 // User sign up
 exports.signup = async (req, res, next) => {
-  // Check that the password is at least 6 characters before hashing
+  // Error checking
   if (req.body.password.length < 6) {
     return res
       .status(403)
       .json({ error: "Password must be at least 6 characters" });
+  } else if (req.body.birthyear <= 0) {
+    return res.status(500).json({ error: "Birthyear must be bigger than 0" });
+  } else if (req.body.birthyear >= new Date().getFullYear()) {
+    return res
+      .status(500)
+      .json({ error: "Birthyear must be smaller than the current year" });
   }
 
   // Hash password
@@ -60,7 +67,7 @@ exports.signup = async (req, res, next) => {
   }
 
   // Create user object from request body
-  const createdUser = new User({
+  const user = new User({
     email: req.body.email,
     password: passwordHashed,
     name: req.body.name,
@@ -71,17 +78,67 @@ exports.signup = async (req, res, next) => {
 
   // Save user to database
   try {
-    const user = await createdUser.save();
+    const response = await user.save();
+    /*
+    let token;
+    try {
+      token = jwt.sign({ name: user.name, email: user.email }, "secretkey", {
+        expiresIn: "1h",
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error signing token" });
+    }*/
     res.status(201).json({
       message: "User created",
-      user: createdUser,
     });
   } catch (error) {
-    console.log(error);
-    if (error.name === "ValidationError") {
-      res.status(403).json({ error: "User with that email already exists" });
+    if (error.errors.email.kind === "unique") {
+      res.status(409).json({ error: "Email already in use by another user" });
     } else {
-      res.status(500).json({ error });
+      res.status(500).json({ error: error });
     }
+  }
+};
+
+// User login
+exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  let existingUser;
+
+  // Find if user exists in db by email
+  try {
+    existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) {
+      return res.status(401).json({ error: "Auth failed" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+
+  // Check if the password matches the one in db
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
+
+    if (!isValidPassword) {
+      res.status(401).json({ error: "Incorrect password" });
+    } else {
+      const token = jwt.sign(
+        {
+          email: existingUser.email,
+          name: existingUser.name,
+          _id: existingUser._id,
+        },
+        "secretkey",
+        {
+          expiresIn: "1h",
+        }
+      );
+      res.status(200).json({ message: "Logged in", token: token });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error });
   }
 };
