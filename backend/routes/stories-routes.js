@@ -4,7 +4,8 @@ const checkAuth = require("../middleware/auth-check");
 // luodaan tänne reititys users resurssille
 const router = express.Router();
 
-//router.get("/", storyControllers.getAllStories);
+router.get("/user/:uid", storyControllers.getStoryByUid);
+
 router.use(checkAuth);
 
 router.post("/", storyControllers.create);

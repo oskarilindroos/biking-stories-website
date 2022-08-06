@@ -1,5 +1,21 @@
 const Story = require("../models/story-model");
-const jwt = require("jsonwebtoken");
+
+exports.getStoryByUid = async (req, res, next) => {
+  const uid = req.params.uid; // Get the user's id from the url params
+
+  try {
+    // Find all stories where the uid matches
+    const stories = await Story.find({ uid: uid });
+    if (stories.length === 0) {
+      throw Error();
+    }
+    res.status(200).json({ stories });
+    console.log(stories);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "No stories found for that user id" });
+  }
+};
 
 exports.create = async (req, res, next) => {
   const story = new Story({
