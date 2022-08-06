@@ -17,7 +17,7 @@ app.use(express.json());
 // sallitaan CORS-pyynnöt ja autentikointi
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Headers", "Authorization");
 
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
@@ -32,7 +32,7 @@ app.use("/api/stories", storiesRoutes);
 app.use(express.static("public")); // public folder for serving images
 // If route not found
 app.use("/", (req, res, next) => {
-  res.status(404).json({ error: "No such endpoint" });
+  res.status(404).json({ message: "No such endpoint" });
 });
 
 // ketjun viimeinen virhekäsittelijä tänne

@@ -5,7 +5,8 @@ const User = require("../models/user-model");
 // Finds all users
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find();
+    // Find all users in the db, omit the password field
+    const users = await User.find().select("-password");
 
     // If no users are found
     if (users.length === 0) {
@@ -23,7 +24,7 @@ exports.getAllUsers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   const _id = req.params._id; // Store the Rser id from url
   try {
-    const user = await User.findById(_id);
+    const user = await User.findById(_id).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -47,14 +48,14 @@ exports.signup = async (req, res, next) => {
   // Error checking
   if (req.body.password.length < 6) {
     return res
-      .status(403)
-      .json({ error: "Password must be at least 6 characters" });
+      .status(422)
+      .json({ message: "Password must be at least 6 characters long" });
   } else if (req.body.birthyear <= 0) {
-    return res.status(500).json({ error: "Birthyear must be bigger than 0" });
+    return res.status(422).json({ message: "Birthyear must be bigger than 0" });
   } else if (req.body.birthyear >= new Date().getFullYear()) {
     return res
-      .status(500)
-      .json({ error: "Birthyear must be smaller than the current year" });
+      .status(422)
+      .json({ message: "Birthyear must be smaller than the current year" });
   }
 
   // Hash password
@@ -63,7 +64,7 @@ exports.signup = async (req, res, next) => {
     passwordHashed = await bcrypt.hash(req.body.password, 12);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Could not hash password" });
+    return res.status(500).json({ message: "Could not hash password" });
   }
 
   // Create user object from request body
@@ -78,24 +79,19 @@ exports.signup = async (req, res, next) => {
 
   // Save user to database
   try {
-    const response = await user.save();
-    /*
-    let token;
-    try {
-      token = jwt.sign({ name: user.name, email: user.email }, "secretkey", {
-        expiresIn: "1h",
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Error signing token" });
-    }*/
+    const user = await user.save();
     res.status(201).json({
       message: "User created",
     });
+    console.log(user);
   } catch (error) {
     if (error.errors.email.kind === "unique") {
-      res.status(409).json({ error: "Email already in use by another user" });
+      res.status(409).json({ message: "Email already in use by another user" });
+    } else if (error.errors.email.kind === "regexp") {
+      res.status(422).json({ message: "Email is invalid" });
     } else {
-      res.status(500).json({ error: error });
+      console.log(error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 };
@@ -111,10 +107,12 @@ exports.login = async (req, res, next) => {
     existingUser = await User.findOne({ email: email });
 
     if (!existingUser) {
-      return res.status(401).json({ error: "Auth failed" });
+      return res
+        .status(401)
+        .json({ message: "User with that email doesn't exist" });
     }
   } catch (error) {
-    return res.status(500).json({ error: error });
+    return res.status(500).json({ message: "Internal server error" });
   }
 
   // Check if the password matches the one in db
@@ -123,22 +121,29 @@ exports.login = async (req, res, next) => {
     isValidPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!isValidPassword) {
-      res.status(401).json({ error: "Incorrect password" });
+      res.status(401).json({ message: "Incorrect password" });
     } else {
+      // Create token
       const token = jwt.sign(
         {
           email: existingUser.email,
           name: existingUser.name,
           _id: existingUser._id,
         },
-        "secretkey",
+        "secretkey", // TODO: add key to env variables
         {
           expiresIn: "1h",
         }
       );
-      res.status(200).json({ message: "Logged in", token: token });
+      // Respond with the token
+      res.status(200).json({
+        message: "Logged in",
+        token: token,
+        _id: existingUser._id,
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: error });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
