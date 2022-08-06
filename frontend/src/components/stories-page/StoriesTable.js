@@ -17,7 +17,7 @@ const StoriesTable = (selectedUser) => {
           </tr>
         </thead>
         <tbody>
-          <tr onClick={() => setOpenModal(true)}>
+          <tr onClick={() => setOpenModal(true)} style={{ cursor: "pointer" }}>
             <td>30.6.2020</td>
             <td>Tampere</td>
             <td>Really cold</td>

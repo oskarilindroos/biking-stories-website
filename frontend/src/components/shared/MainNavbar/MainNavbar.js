@@ -5,12 +5,11 @@ import { useState, useContext } from "react";
 import styles from "./MainNavbar.module.css";
 
 import LoginSignupModal from "../../login-signup-page/LoginSignupModal";
-import UserContext from "../../../contexts/UserContext";
+import { UserContext } from "../../../contexts/UserContext";
 
 const MainNavbar = () => {
   const [openModal, setOpenModal] = useState(false);
-  const userContext = useContext(UserContext);
-
+  const { user, logout } = useContext(UserContext);
   return (
     <Navbar className={styles.navbar} bg="light" expand="lg">
       <Container>
@@ -24,16 +23,17 @@ const MainNavbar = () => {
             <Nav.Link className={styles.link} as={Link} to="/users">
               Users
             </Nav.Link>
-            <Nav.Link className={styles.link} as={Link} to="/stories">
+            <Nav.Link
+              className={styles.link}
+              as={Link}
+              to="/Mason Lukes/stories"
+            >
               Stories
             </Nav.Link>
-            {localStorage.getItem("token") ? (
+            {user.isLoggedIn ? (
               <>
                 <Nav.Link className={styles.link} as={Link} to="/stories/new">
-                  New Story
-                </Nav.Link>
-                <Nav.Link className={styles.link} as={Link} to="/stories/new">
-                  Edit Story
+                  Edit Stories
                 </Nav.Link>
               </>
             ) : (
@@ -42,10 +42,13 @@ const MainNavbar = () => {
           </Nav>
         </Navbar.Collapse>
         <Nav className="ms-auto">
-          {localStorage.getItem("token") ? (
-            <Button variant="danger" onClick={userContext.logout}>
-              Logout
-            </Button>
+          {user.isLoggedIn ? (
+            <>
+              <Button variant="danger" onClick={logout}>
+                Logout
+              </Button>
+              <p>Logged in as: {user._id}</p>
+            </>
           ) : (
             <Button variant="outline-dark" onClick={() => setOpenModal(true)}>
               Log In/Sign Up

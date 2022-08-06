@@ -11,10 +11,10 @@ import MainFooter from "../MainFooter/MainFooter";
 import Home from "../../home-page/Home";
 import Users from "../../users-page/Users";
 import Stories from "../../stories-page/Stories";
-import UserContext from "../../../contexts/UserContext";
+///import UserContext from "../../../contexts/UserContext";
 
 const MainRouter = () => {
-  const userContext = useContext(UserContext);
+  //const { user } = useContext(UserContext);
 
   return (
     <Router>

@@ -1,45 +1,52 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import styles from './UsersTableRow.module.css';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import styles from "./UsersTableRow.module.css";
 
 const UsersTableRows = () => {
+  const [users, setUsers] = useState([]);
+  let usersTable = [];
 
-    const [users, setUsers] = useState([]);
-    let usersTable = [];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("/users");
+        setUsers(response.data.users);
+        console.log(response.data.users);
+      } catch (error) {
+        alert(error.response.data.message);
+        console.log(error);
+      }
+    };
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const response = await axios.get('http://localhost:5001/users'); // TODO: Remove mock data
-            setUsers(response.data);
-        }
+    fetchUsers();
+  }, []);
 
-        fetchUsers();
-
-    }, []);
-
-    users.map((user) => {
-        usersTable.push(
-            <tr>
-                <td>
-                    <img
-                        className={styles.profilePicture}
-                        src={user.img}
-                        alt="profile pic">
-                    </img>
-                    <Link className={styles.link} to={`/${user.fullname}/stories`} state={{ user }}>{user.fullname}</Link>  {/*Pass the selected user as a state object which we can later get with useLocation
-                        TODO: Change fullname to _uid */}
-                </td>
-                <td>{user.city}</td>
-                <td>{new Date().getFullYear() - user.birthyear}</td>
-            </tr>);
-        return user;
-    })
-
-
-    return (
-        usersTable
+  users.map((user) => {
+    usersTable.push(
+      <tr key={user._id}>
+        <td>
+          <img
+            className={styles.profilePicture}
+            src={user.profilePictureURL}
+            alt="profile pic"
+          ></img>
+          <Link
+            className={styles.link}
+            to={`/${user._id}/stories`}
+            state={{ user }}
+          >
+            {user.name}
+          </Link>{" "}
+        </td>
+        <td>{user.city}</td>
+        <td>{new Date().getFullYear() - user.birthyear}</td>
+      </tr>
     );
-}
+    return user;
+  });
+
+  return usersTable;
+};
 
 export default UsersTableRows;

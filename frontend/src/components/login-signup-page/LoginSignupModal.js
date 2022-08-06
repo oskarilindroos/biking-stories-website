@@ -1,8 +1,7 @@
 import { Modal, Button, Form } from "react-bootstrap";
-import { useState, useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { login, signup } from "../../services/user/UserService";
-import UserContext from "../../contexts/UserContext";
+import { useState, useContext, useEffect } from "react";
+import axios from "axios";
+import { UserContext } from "../../contexts/UserContext";
 
 const LoginSignupModal = ({ open, onClose }) => {
   const [user, setUser] = useState({
@@ -16,9 +15,9 @@ const LoginSignupModal = ({ open, onClose }) => {
   });
 
   const [showSignUp, setShowSignUp] = useState(false); // This state controls whether or not additional sign up forms are shown
-  //const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-  const userContext = useContext(UserContext);
+  const [errorMsg, setErrorMsg] = useState("");
+  const { login } = useContext(UserContext);
+  // console.log(userContext);
 
   const showSignUpForms = () => {
     setShowSignUp(true);
@@ -39,14 +38,33 @@ const LoginSignupModal = ({ open, onClose }) => {
     // TODO: add input check
     if (showSignUp) {
       // Sign up
-      signup(user, setError);
-      hideSignUpForms();
+      try {
+        const response = await axios.post("/users/signup", user);
+        console.log(response);
+
+        hideSignUpForms();
+      } catch (error) {
+        console.log(error);
+        setErrorMsg(error.response.data.message);
+      }
     } else {
       // Log in
-      login(user, userContext.login, setError);
-      onClose(); // Close modal on succesful login
+      try {
+        const response = await axios.post("/users/login", user);
+        console.log(response);
+        login(response.data._id, response.data.token);
+        onClose();
+      } catch (error) {
+        console.log(error);
+        setErrorMsg(error.response.data.message);
+      }
     }
   };
+
+  useEffect(() => {
+    // Empty error message when user is editing input fields
+    setErrorMsg("");
+  }, [user, showSignUp]);
 
   return (
     <Modal show={open} onHide={onClose}>
@@ -65,6 +83,7 @@ const LoginSignupModal = ({ open, onClose }) => {
         >
           Sign Up
         </Button>
+        <br />
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -136,6 +155,7 @@ const LoginSignupModal = ({ open, onClose }) => {
               </Form.Group>
             </>
           )}
+          {errorMsg ? <p className="text-danger">{errorMsg}</p> : ""}
           <div className="d-grid">
             <Button variant="success" type="submit">
               {showSignUp ? "Sign Up" : "Log In"}
