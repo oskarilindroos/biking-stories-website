@@ -10,13 +10,13 @@ exports.getAllUsers = async (req, res, next) => {
 
     // If no users are found
     if (users.length === 0) {
-      res.status(404).json({ message: "No users found" });
+      return res.status(404).json({ message: "No users found" });
     } else {
-      res.status(200).json({ users: users });
+      return res.status(200).json({ users: users });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ error: error });
+    return res.status(404).json({ message: error });
   }
 };
 
@@ -27,7 +27,7 @@ exports.getUserById = async (req, res, next) => {
     const user = await User.findById(_id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     } else {
       return res.status(200).json({ user: user });
     }
@@ -39,7 +39,7 @@ exports.getUserById = async (req, res, next) => {
         .status(500)
         .json({ error: `User id must be of type: ${error.kind}` });
     }
-    res.status(500).json({ error: error });
+    return res.status(500).json({ message: error });
   }
 };
 
@@ -74,25 +74,19 @@ exports.signup = async (req, res, next) => {
     name: req.body.name,
     city: req.body.city,
     birthyear: req.body.birthyear,
-    profilePictureURL: req.body.profilePictureURL,
+    profilePictureURL: req.body.profilepic_url,
   });
 
   // Save user to database
   try {
-    const user = await user.save();
-    res.status(201).json({
+    const createdUser = await user.save();
+    console.log(createdUser);
+    return res.status(201).json({
       message: "User created",
     });
-    console.log(user);
   } catch (error) {
-    if (error.errors.email.kind === "unique") {
-      res.status(409).json({ message: "Email already in use by another user" });
-    } else if (error.errors.email.kind === "regexp") {
-      res.status(422).json({ message: "Email is invalid" });
-    } else {
-      console.log(error);
-      res.status(500).json({ message: "Internal server error" });
-    }
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -121,7 +115,7 @@ exports.login = async (req, res, next) => {
     isValidPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!isValidPassword) {
-      res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json({ message: "Incorrect password" });
     } else {
       // Create token
       const token = jwt.sign(
@@ -136,14 +130,15 @@ exports.login = async (req, res, next) => {
         }
       );
       // Respond with the token
-      res.status(200).json({
+      return res.status(200).json({
         message: "Logged in",
         token: token,
         _id: existingUser._id,
+        expiresIn: "1h",
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
