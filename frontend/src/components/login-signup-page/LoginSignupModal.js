@@ -18,9 +18,7 @@ const LoginSignupModal = ({ open, onClose }) => {
   const [showSignUp, setShowSignUp] = useState(false); // This state controls whether or not additional sign up forms are shown
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
-  const [isSubmit, setIsSubmit] = useState(false);
   const { login } = useContext(UserContext);
-  // console.log(userContext);
 
   const showSignUpForms = () => {
     setShowSignUp(true);

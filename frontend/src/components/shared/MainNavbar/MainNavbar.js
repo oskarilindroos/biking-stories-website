@@ -23,22 +23,9 @@ const MainNavbar = () => {
             <Nav.Link className={styles.link} as={Link} to="/users">
               Users
             </Nav.Link>
-            <Nav.Link
-              className={styles.link}
-              as={Link}
-              to="/Mason Lukes/stories"
-            >
+            <Nav.Link className={styles.link} as={Link} to="/stories">
               Stories
             </Nav.Link>
-            {user.isLoggedIn ? (
-              <>
-                <Nav.Link className={styles.link} as={Link} to="/stories/new">
-                  Edit Stories
-                </Nav.Link>
-              </>
-            ) : (
-              ""
-            )}
           </Nav>
         </Navbar.Collapse>
         <Nav className="ms-auto">
@@ -47,7 +34,6 @@ const MainNavbar = () => {
               <Button variant="danger" onClick={logout}>
                 Logout
               </Button>
-              <p>Logged in as: {user._id}</p>
             </>
           ) : (
             <Button variant="outline-dark" onClick={() => setOpenModal(true)}>
