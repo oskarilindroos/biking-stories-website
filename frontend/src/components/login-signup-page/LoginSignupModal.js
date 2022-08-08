@@ -2,6 +2,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContext";
+import { addPointerEvent } from "framer-motion";
 
 const LoginSignupModal = ({ open, onClose }) => {
   const [user, setUser] = useState({
@@ -15,7 +16,9 @@ const LoginSignupModal = ({ open, onClose }) => {
   });
 
   const [showSignUp, setShowSignUp] = useState(false); // This state controls whether or not additional sign up forms are shown
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
   const { login } = useContext(UserContext);
   // console.log(userContext);
 
@@ -30,22 +33,24 @@ const LoginSignupModal = ({ open, onClose }) => {
   // Handler to set user object's properties
   const formOnChangeHandler = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+    setErrors(validate(user));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: add input check
     if (showSignUp) {
       // Sign up
-      try {
-        const response = await axios.post("/users/signup", user);
-        console.log(response);
+      if (Object.keys(errors).length === 0) {
+        try {
+          const response = await axios.post("/users/signup", user);
+          console.log(response);
 
-        hideSignUpForms();
-      } catch (error) {
-        console.log(error);
-        setErrorMsg(error.response.data.message);
+          hideSignUpForms();
+        } catch (error) {
+          console.log(error);
+          setApiError(error.message);
+        }
       }
     } else {
       // Log in
@@ -56,15 +61,44 @@ const LoginSignupModal = ({ open, onClose }) => {
         onClose();
       } catch (error) {
         console.log(error);
-        setErrorMsg(error.response.data.message);
+        if (error.response.data.message) {
+          setApiError(error.response.data.message);
+        } else {
+          setApiError(error.message);
+        }
       }
     }
   };
 
+  const validate = () => {
+    const errors = {};
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!user.email) {
+      errors.email = "Email is required!";
+    } else if (!regex.test(user.email)) {
+      errors.email = "Email is not valid!";
+    }
+    if (!user.password) {
+      errors.password = "Password is required!";
+    } else if (user.password.length < 6) {
+      errors.password = "Password must be more than 6 characters";
+    }
+    if (!user.name) {
+      errors.name = "Name is required!";
+    }
+    if (!user.city) {
+      errors.city = "City is required!";
+    }
+    if (!user.birthyear) {
+      errors.birthyear = "Birthyear is required!";
+    }
+    return errors;
+  };
+
   useEffect(() => {
-    // Empty error message when user is editing input fields
-    setErrorMsg("");
-  }, [user, showSignUp]);
+    setApiError("");
+    console.log(user);
+  }, [user]);
 
   return (
     <Modal show={open} onHide={onClose}>
@@ -96,6 +130,7 @@ const LoginSignupModal = ({ open, onClose }) => {
               name="email"
               onChange={formOnChangeHandler}
             />
+            {showSignUp ? <p className="text-danger">{errors.email}</p> : ""}
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -107,6 +142,7 @@ const LoginSignupModal = ({ open, onClose }) => {
               name="password"
               onChange={formOnChangeHandler}
             />
+            {showSignUp ? <p className="text-danger">{errors.password}</p> : ""}
           </Form.Group>
 
           {showSignUp && (
@@ -120,6 +156,7 @@ const LoginSignupModal = ({ open, onClose }) => {
                   name="name"
                   onChange={formOnChangeHandler}
                 />
+                <p className="text-danger">{errors.name}</p>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicCity">
@@ -131,10 +168,11 @@ const LoginSignupModal = ({ open, onClose }) => {
                   name="city"
                   onChange={formOnChangeHandler}
                 />
+                <p className="text-danger">{errors.city}</p>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicCity">
-                <Form.Label>Birthyear</Form.Label>
+                <Form.Label>Birthyear*</Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Enter birthyear"
@@ -142,6 +180,7 @@ const LoginSignupModal = ({ open, onClose }) => {
                   name="birthyear"
                   onChange={formOnChangeHandler}
                 />
+                <p className="text-danger">{errors.birthyear}</p>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicUrl">
@@ -155,7 +194,7 @@ const LoginSignupModal = ({ open, onClose }) => {
               </Form.Group>
             </>
           )}
-          {errorMsg ? <p className="text-danger">{errorMsg}</p> : ""}
+          {apiError ? <p className="text-danger">{apiError}</p> : ""}
           <div className="d-grid">
             <Button variant="success" type="submit">
               {showSignUp ? "Sign Up" : "Log In"}

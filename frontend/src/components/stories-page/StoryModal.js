@@ -1,14 +1,25 @@
 import Modal from "react-bootstrap/Modal";
 
 const StoryModal = (props) => {
-  console.log(props.selectedUser);
+  const story = props.selectedStory;
   return (
-    <Modal show={props.open} onHide={props.onClose}>
+    <Modal size="lg" show={props.open} onHide={props.onClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Date</Modal.Title>
+        <Modal.Title>
+          On {story.date} at {story.location} in {story.city}
+        </Modal.Title>
       </Modal.Header>
-      <Modal.Body>Story text</Modal.Body>
-      <Modal.Footer></Modal.Footer>
+      <Modal.Body>
+        <p>{story.text}</p>
+        <img
+          style={{ maxWidth: "90%" }}
+          src={story.img}
+          alt="biking related"
+        ></img>
+      </Modal.Body>
+      <Modal.Footer>
+        <p className="text-center">Story by {story.name}</p>
+      </Modal.Footer>
     </Modal>
   );
 };

@@ -12,7 +12,6 @@ const UsersTableRows = () => {
       try {
         const response = await axios.get("/users");
         setUsers(response.data.users);
-        console.log(response.data.users);
       } catch (error) {
         alert(error.response.data.message);
         console.log(error);
@@ -31,11 +30,7 @@ const UsersTableRows = () => {
             src={user.profilePictureURL}
             alt="profile pic"
           ></img>
-          <Link
-            className={styles.link}
-            to={`/${user._id}/stories`}
-            state={{ user }}
-          >
+          <Link className={styles.link} to={`/${user._id}/stories`}>
             {user.name}
           </Link>{" "}
         </td>
