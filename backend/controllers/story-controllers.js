@@ -54,3 +54,27 @@ exports.create = async (req, res, next) => {
     return res.status(500).json({ message: "Error creating story" });
   }
 };
+
+exports.patch = async (req, res, next) => {
+  try {
+    const storyid = req.params.storyid; // The story's id to be patched
+    const updates = req.body;
+
+    const result = await Story.findOneAndUpdate(
+      { _id: storyid, uid: req.userInfo.uid },
+      updates,
+      {
+        new: true,
+      }
+    );
+
+    if (!result) {
+      res.status(404).json({ message: "Story not found" });
+    } else {
+      res.status(200).json({ message: result });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error" });
+    console.log(error);
+  }
+};

@@ -11,4 +11,6 @@ router.use(checkAuth);
 
 router.post("/", storyControllers.create);
 
+router.patch("/:storyid", storyControllers.patch);
+
 module.exports = router;

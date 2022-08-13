@@ -16,7 +16,7 @@ exports.getAllUsers = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(404).json({ message: error });
+    return res.status(500).json({ message: error });
   }
 };
 
@@ -47,9 +47,7 @@ exports.getUserById = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   // Error checking
   if (req.body.password.length < 6) {
-    return res
-      .status(422)
-      .json({ message: "Password must be at least 6 characters long" });
+    return res.json({ message: "Password must be at least 6 characters long" });
   } else if (req.body.birthyear <= 0) {
     return res.status(422).json({ message: "Birthyear must be bigger than 0" });
   } else if (req.body.birthyear >= new Date().getFullYear()) {
