@@ -9,10 +9,15 @@ const StoryCard = () => {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        //const response = await axios.get('http://localhost:5001/stories'); // TODO: Remove mock data
-        //const randomStory = response.data[Math.floor(Math.random() * response.data.length)]; // Get a random story
-        //randomStory.date = new Date(randomStory.date).toLocaleDateString(); // Format date to readable format
-        //setStory(randomStory);
+        const response = await axios.get("/stories");
+        console.log(response.data.stories);
+        const randomStory =
+          response.data.stories[
+            Math.floor(Math.random() * response.data.stories.length)
+          ]; // Get a random story
+        randomStory.date = new Date(randomStory.date).toLocaleDateString(); // Format date to readable format
+        console.log(randomStory);
+        setStory(randomStory);
       } catch (error) {
         console.error("Error: " + error);
 
@@ -32,14 +37,14 @@ const StoryCard = () => {
       <Card.Body>
         <Card.Title>
           <b>
-            {story.date} at {story.place}
+            {story.date} at {story.location}, {story.city}
           </b>
         </Card.Title>
         <Card.Text>
-          <em>"{story.story}"</em>
+          <em>"{story.text}"</em>
         </Card.Text>
       </Card.Body>
-      <Card.Footer className="text-center">{story.fullname}</Card.Footer>
+      <Card.Footer className="text-center">By {story.name}</Card.Footer>
     </Card>
   );
 };

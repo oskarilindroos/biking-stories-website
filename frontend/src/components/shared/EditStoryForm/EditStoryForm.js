@@ -1,54 +1,69 @@
 import { Button, Form } from "react-bootstrap";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
 
 const EditStoryForm = (props) => {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate(); // Used to navigate back to stories page after submitting form
+  const [isEditState, setEditState] = useState(props.isEditState);
 
-  const [editState, setEditState] = useState(props.editState);
-
-  const [story, setStory] = useState({
-    date: "",
-    text: "",
-    city: "",
-    location: "",
-    img: "",
-  });
+  // If the user is editing the story, set the initial story state from the props, otherwise set it as empty
+  const [story, setStory] = useState(
+    isEditState
+      ? props.story
+      : {
+          date: "",
+          text: "",
+          city: "",
+          location: "",
+          img: "",
+        }
+  );
 
   const formOnChangeHandler = (e) => {
     setStory({ ...story, [e.target.name]: e.target.value });
-    // console.log(story);
+    console.log(story);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editState) {
+    if (isEditState) {
       editStory();
     } else {
       createStory();
-      e.target.reset(); // Clear input fields
     }
   };
 
   const createStory = async () => {
     try {
-      console.log(typeof story.date);
       const response = await axios.post("/stories", story, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      alert("Story created succesfully");
       console.log(response);
+      alert("Story created succesfully");
+      navigate("/stories");
     } catch (error) {
+      alert(error.message);
       console.log(error);
     }
   };
 
   const editStory = async () => {
     try {
+      const response = await axios.patch(`/stories/${props.story._id}`, story, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      console.log(response);
+      alert("Story edited succesfully");
+      navigate("/stories");
     } catch (error) {
+      alert(error.message);
       console.log(error);
     }
   };
@@ -61,6 +76,7 @@ const EditStoryForm = (props) => {
           name="date"
           onChange={formOnChangeHandler}
           required
+          defaultValue={isEditState ? props.story.date : ""}
         />
       </Form.Group>
 
@@ -73,6 +89,7 @@ const EditStoryForm = (props) => {
           name="text"
           onChange={formOnChangeHandler}
           required
+          defaultValue={isEditState ? props.story.text : ""}
         />
       </Form.Group>
       <Form.Group className="mb-3">
@@ -83,6 +100,7 @@ const EditStoryForm = (props) => {
           name="city"
           onChange={formOnChangeHandler}
           required
+          defaultValue={isEditState ? props.story.city : ""}
         />
       </Form.Group>
       <Form.Group className="mb-3">
@@ -93,6 +111,7 @@ const EditStoryForm = (props) => {
           name="location"
           onChange={formOnChangeHandler}
           required
+          defaultValue={isEditState ? props.story.location : ""}
         />
       </Form.Group>
       <Form.Group className="mb-3">
@@ -102,10 +121,11 @@ const EditStoryForm = (props) => {
           placeholder="Image url related to the story"
           name="img"
           onChange={formOnChangeHandler}
+          defaultValue={isEditState ? props.story.img : ""}
         />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Create
+        {isEditState ? "Save" : "Post"}
       </Button>
     </Form>
   );

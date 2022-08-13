@@ -38,7 +38,7 @@ const StoriesTable = (props) => {
         style={{ cursor: "pointer" }}
       >
         <td>
-          {(story.date = new Date(story.date).toLocaleDateString("en-us"))}
+          {(story.date = new Date(story.date).toISOString().substring(0, 10))}
         </td>
         <td>{story.location}</td>
         <td>{story.text}</td>
@@ -48,7 +48,7 @@ const StoriesTable = (props) => {
         </td>
         {user._id === story.uid && (
           <td>
-            <Link to={`/stories/${story._id}`}>
+            <Link to={`/stories/${story._id}`} state={{ story }}>
               <Button className="mb-2">Edit</Button>
             </Link>
             <br />
@@ -61,7 +61,7 @@ const StoriesTable = (props) => {
   });
   return (
     <Container>
-      <Table responsive="sm" bordered hover>
+      <Table responsive="sm" hover>
         <thead>
           <tr>
             <th>Date</th>
