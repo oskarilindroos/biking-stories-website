@@ -1,6 +1,6 @@
 import { Button, Container } from "react-bootstrap";
 import { Table } from "react-bootstrap";
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import StoryModal from "./StoryModal";
 import { UserContext } from "../../contexts/UserContext";
@@ -25,6 +25,7 @@ const StoriesTable = (props) => {
       setFetchStories(!fetchStories);
     } catch (error) {
       console.log(error);
+      alert(error.message);
     }
   };
 
@@ -47,8 +48,10 @@ const StoriesTable = (props) => {
         <td>
           {(story.date = new Date(story.date).toISOString().substring(0, 10))}
         </td>
-        <td>{story.location}</td>
-        <td>{story.text}</td>
+        <td>
+          {story.location}, {story.city}
+        </td>
+        <td>{story.text.split(".")[0]}...</td>
         <td>{story.name}</td>
         <td>
           <img style={{ width: 100 }} src={story.img}></img>
@@ -85,11 +88,11 @@ const StoriesTable = (props) => {
       <Table responsive="sm">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th style={{ width: "25%" }}>Story</th>
+            <th style={{ width: "10%" }}>Date</th>
+            <th style={{ width: "20%" }}>Location</th>
+            <th style={{ width: "35%" }}>Story</th>
             <th>Creator</th>
-            <th>Image</th>
+            <th style={{ width: "10%" }}>Image</th>
             <th style={{ width: "10%" }}></th>
           </tr>
         </thead>

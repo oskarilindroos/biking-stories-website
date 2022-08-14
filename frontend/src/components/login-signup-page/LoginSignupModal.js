@@ -116,7 +116,7 @@ const LoginSignupModal = ({ open, onClose }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>Email address*</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter email"
@@ -128,7 +128,7 @@ const LoginSignupModal = ({ open, onClose }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Password*</Form.Label>
             <Form.Control
               type="password"
               placeholder="Password"
@@ -142,7 +142,7 @@ const LoginSignupModal = ({ open, onClose }) => {
           {showSignUp && (
             <>
               <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>Name</Form.Label>
+                <Form.Label>Name*</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter name"
@@ -154,7 +154,7 @@ const LoginSignupModal = ({ open, onClose }) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicCity">
-                <Form.Label>City</Form.Label>
+                <Form.Label>City*</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter city"

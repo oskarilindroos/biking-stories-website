@@ -18,12 +18,6 @@ const StoryCard = () => {
         setStory(randomStory);
       } catch (error) {
         console.error("Error: " + error);
-
-        setStory({
-          date: "unknown",
-          place: "unknown",
-          story: "unknown",
-        });
       }
     };
 

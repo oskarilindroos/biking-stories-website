@@ -7,17 +7,23 @@
     padding-bottom: 5rem;    /* Footer height */
   }
 
-.table {
-   table-layout: fixed; 
-}
 
+/*
 .table td {
  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+*/
 p {
     word-wrap: break-word;
 }
 
+.table td {
+    word-wrap: break-word;
+}
+
+.table tr {
+    width: 10px;
+    height: 10px;
+}
