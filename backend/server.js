@@ -48,7 +48,7 @@ app.use((error, req, res, next) => {
 
 // MongoDB:n yhteyskuvaaja ja optioiden määrittelyt tänne
 mongoose
-  .connect(uri) //TODO: Add options
+  .connect(uri)
   .then(() => {
     app.listen(5000);
     console.log("Database connected");

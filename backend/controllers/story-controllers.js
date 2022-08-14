@@ -57,9 +57,10 @@ exports.create = async (req, res, next) => {
 
 exports.patch = async (req, res, next) => {
   try {
-    const storyid = req.params.storyid; // The story's id to be patched
+    const storyid = req.params.storyid;
     const updates = req.body;
 
+    // Find and update the story where the _id and uid matches
     const result = await Story.findOneAndUpdate(
       { _id: storyid, uid: req.userInfo.uid },
       updates,
@@ -71,10 +72,29 @@ exports.patch = async (req, res, next) => {
     if (!result) {
       res.status(404).json({ message: "Story not found" });
     } else {
-      res.status(200).json({ message: result });
+      res.status(200).json({ message: "Story succesfully updated" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res.status(500).json({ message: error });
     console.log(error);
+  }
+};
+
+exports.deleteById = async (req, res, next) => {
+  try {
+    const storyid = req.params.storyid;
+    // Find and delete the story where the _id and uid matches
+    const result = await Story.findOneAndDelete({
+      _id: storyid,
+      uid: req.userInfo.uid,
+    });
+    if (!result) {
+      res.status(404).json({ message: "Story not found" });
+    } else {
+      res.status(200).json({ message: "Story succesfully deleted" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
   }
 };
