@@ -24,7 +24,6 @@ const EditStoryForm = (props) => {
 
   const formOnChangeHandler = (e) => {
     setStory({ ...story, [e.target.name]: e.target.value });
-    console.log(story);
   };
 
   const handleSubmit = (e) => {
@@ -43,7 +42,6 @@ const EditStoryForm = (props) => {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      console.log(response);
       alert("Story created succesfully");
       navigate("/stories");
     } catch (error) {
@@ -59,7 +57,6 @@ const EditStoryForm = (props) => {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      console.log(response);
       alert("Story edited succesfully");
       navigate("/stories");
     } catch (error) {

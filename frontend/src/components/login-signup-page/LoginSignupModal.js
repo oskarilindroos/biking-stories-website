@@ -2,7 +2,6 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContext";
-import { addPointerEvent } from "framer-motion";
 
 const LoginSignupModal = ({ open, onClose }) => {
   const [user, setUser] = useState({
@@ -42,7 +41,6 @@ const LoginSignupModal = ({ open, onClose }) => {
       if (Object.keys(errors).length === 0) {
         try {
           const response = await axios.post("/users/signup", user);
-          console.log(response);
 
           hideSignUpForms();
         } catch (error) {
@@ -54,7 +52,6 @@ const LoginSignupModal = ({ open, onClose }) => {
       // Log in
       try {
         const response = await axios.post("/users/login", user);
-        console.log(response);
         login(response.data._id, response.data.token);
         onClose();
       } catch (error) {
@@ -95,7 +92,6 @@ const LoginSignupModal = ({ open, onClose }) => {
 
   useEffect(() => {
     setApiError("");
-    console.log(user);
   }, [user]);
 
   return (

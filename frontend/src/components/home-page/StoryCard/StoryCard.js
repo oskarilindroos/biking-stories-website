@@ -10,13 +10,11 @@ const StoryCard = () => {
     const fetchStories = async () => {
       try {
         const response = await axios.get("/stories");
-        console.log(response.data.stories);
         const randomStory =
           response.data.stories[
             Math.floor(Math.random() * response.data.stories.length)
           ]; // Get a random story
         randomStory.date = new Date(randomStory.date).toLocaleDateString(); // Format date to readable format
-        console.log(randomStory);
         setStory(randomStory);
       } catch (error) {
         console.error("Error: " + error);
