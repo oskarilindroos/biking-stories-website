@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 
@@ -6,10 +7,9 @@ const morgan = require("morgan");
 const usersRoutes = require("./routes/users-routes");
 const storiesRoutes = require("./routes/stories-routes");
 
-const pwd = "EtkYiQuZowSWVFaC"; // TODO: Add db password to env variables
 const app = express();
 
-const uri = `mongodb+srv://mongo_admin:${pwd}@cluster0.aemhc.mongodb.net/BicycleSite?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USR}:${process.env.DB_PWD}@cluster0.aemhc.mongodb.net/BicycleSite?retryWrites=true&w=majority`;
 
 app.use(morgan("dev"));
 app.use(express.json());
