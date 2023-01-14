@@ -6,7 +6,7 @@ import MainRouter from "./components/shared/MainRouter/MainRouter";
 import { UserProvider } from "./contexts/UserContext";
 
 // base url for all api calls
-axios.defaults.baseURL = "http://localhost:5000/api/";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const App = () => {
   return (
