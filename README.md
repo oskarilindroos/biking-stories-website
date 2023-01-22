@@ -1,7 +1,7 @@
 # Introduction
 This project was done for a 2022 summer MERN stack course. The project's goal was to create a MERN stack application for a biking stories site. On the site users can post their biking related stories and delete or update their own stories. Emphasis was on the site's functionality and not so much on visuals which is why it looks very "bootstrappy".
 
-**The site is deployed live on Render: https://biking-stories-frontend.onrender.com/**
+**The site is deployed live on Render: https://biking-stories-frontend.onrender.com/ (give the database some time to warm up)**
 
 # Technologies used
 Client
